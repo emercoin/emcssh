@@ -1,0 +1,181 @@
+.\" Process this file with
+.\" groff -man -Tascii emcssh.8
+.\"
+.TH EMCSSH 8 "NOVEMBER 2014" FreeBSD "User Manuals"
+.SH NAME
+emcssh \-- PKI interface between EmerCoin and OpenSSH  
+.SH SYNOPSIS
+.B emcssh
+.I username
+.SH DESCRIPTION
+.B emcssh
+returns a public key list for OpenSSH daemon
+.B sshd.
+
+When a user logs in to a host using an SSH key, the
+.B sshd
+server searches for an appropriate public key for the user in the predefined keyfile, usually
+.B $HOME/.ssh/authorized_keys.
+If 
+.B emcssh 
+is specified as the
+.B AuthorizedKeysCommand
+parameter in the ssh config file
+.BR sshd_config,
+then sshd runs
+.B emcssh
+with a single argument - login username.
+
+.B emcssh
+reads lines from another file - 
+.B emcssh_keys,
+located by default in 
+.B $HOME/.ssh.
+If
+.B emcssh_keys
+contains just public keys, then the lines are returned without changes.
+In this case
+.B emcssh
+would just return a primary keylist for the specified user (with a secondary keylist provided by the default
+.B authorized_keys
+file). 
+
+However, the
+.B emcssh_keys
+file can include special lines containing
+.I lists
+which
+.B emcssh
+will process in its own special way (see below).
+Each
+.I list 
+element is separated by a pipe 
+.B (|).
+and can be one of:
+.IP -
+regular ssh key.
+.IP -
+reference to another list, in format 
+.I @key_name.
+.LP
+The following example demonstrates a list containing two references and a public key:
+
+.B @jack|@jill|ssh-rsa AAA...fIec=
+
+When
+.B emcssh
+finds a list, it splits it into elements and processes each. 
+If an element is a regular ssh key,
+.B emcssh
+just prints it. If an element is a reference,
+.B emcssh
+searches for an appropriate key with service prefix 
+.B ssh: 
+in the distributed
+.B EmerCoin Name-Value Storage
+(NVS), and processes the extracted value.
+
+The extracted value can contain another 
+.I list,
+in the same format as described above.
+
+Imagine the following scenario:
+
+1. Jack deposits his own public ssh-key into EmerCoin NVS. 
+His list contains a single element - an ssh key only - and he uses his name as the search key. Thus, he deposits the pair:
+
+.B ssh:jack -> ssh-rsa AAA...xyzQ=
+
+2. Jill does the same, and deposits her own public key:
+
+.B ssh:jill -> ssh-rsa AAA...eklmn=
+
+3. A sysadmin decides to create a workgroup for access to company servers and deposits into EmerCoin NVS the following pair:
+
+.B ssh:workgroup -> @jack|@jill
+
+In 
+.B $HOME/.ssh/emcssh_keys
+on any workgroup server, he writes a reference to the group:
+
+.B @workgroup
+
+When
+.B emcssh 
+finds this reference, it extracts the appropriate value from EmerCoin NVS.
+That value contains another list [3]. 
+.B emcssh
+processes this list too, and retrieves the public key for each group member [1,2].
+As a result,
+.B emcssh
+returns public keys for both group members, Jack and Jill. Subsequently, either one of them can log into the server with their key.
+
+If Jack generates a new public/private keypair, he can update the value for his record [1] in the EmerCoin NVS.
+Changes will be automatically propagated through the EmerCoin network, and next time Jack can log into any server with his new key.
+
+The sysadmin can create another list, containing references to 
+.B workgroup
+[3], other groups, individuals, and so on. References are recursive, and thus the sysadmin can create and maintain account trees. 
+
+If the sysadmin decides to revoke Jack's access to the
+.B workgroup,
+he simply removes Jack's reference from the list [3], and updates the record in the EmerCoin NVS. 
+
+In this way, the combination of 
+.B EmerCoin
+with 
+.B emcssh
+creates a decentralized world-wide 
+.B Public Key Infrastructure (PKI).
+
+.SH FILES
+
+.I $HOME/.ssh/emcssh_keys
+.RS
+Default per user 
+.I list
+storage.
+Can contain many lists, or regular public keys.
+.RE
+
+.I /usr/local/etc/emcssh_config
+.RS
+.B emcssh
+config file. Allows the following parameters:
+.IP emcurl
+The EmerCoin wallet's RPC URL, to be used as the "domain controller".
+This URL is mandatory and used to resolve all references to EmerCoin NVS. e.g:
+
+.B http://rpc_USERNAME:rpc_PASSWORD@127.0.0.1:6662
+.IP ssl_check
+Validate the RPC server's SSL certificate, if HTTPS is used above (in the emcurl).
+.IP verbose
+Verbosity level [0-4]. Messages are printed to stdout as comments, useful for testing/debugging.
+Level 3 prints reference resolving paths. Default is 2 (average verbose).
+.IP maxkeys
+Maximum keys to cache in the hashtable. Each key or reference returned is stored in the hashtable, to preserve double return or lookup of the same value.
+Thus, with "diamond-shape inheritance", each subtree will be processed only once. Default is 4096.
+.IP emcssh_keys 
+Path to the file 
+.B authorized_keys. 
+Can contain metasymbols 
+.B $H
+(home directory for specified user), and
+.B $U
+(username).
+Default is
+.I $H/.ssh/emcssh_keys
+.IP ignore 
+Contains list of elements to be ignored. Items in this list will be iterated and resolved, keys and references will be cached, but they will not be returned. Default is empty.
+.IP recursion
+Maximum depth of recursion. Default is 30.
+
+.SH AUTHOR
+EmerCoin Team <team at emercoin dot com>
+.SH "SEE ALSO"
+SSHD_CONFIG(5)
+
+http://emercoin.com
+
+http://en.wikipedia.org/wiki/Public_key_infrastructure
+

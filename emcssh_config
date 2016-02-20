@@ -1,0 +1,30 @@
+# Config file for Emercoin SSH PKI (EMCSSH)
+#
+
+# URL for Emercoin JSON RPC Server. The URL should be localhost, or on a trusted local network, unless Emercoin is configured to use HTTPS for RPC connections.
+emcurl			http://rpcuser:rpcpassword@127.0.0.1:6662/
+
+# Validate the RPC server's SSL certificate, if HTTPS is used above (in the emcurl).
+ssl_check		1
+
+# Verbose level 0-4. 0=quiet. 4 - detailed info. Default is 2
+verbose			2
+
+#Maximal keys in the cache hashtable. Default is 4K
+maxkeys			4096
+
+# Path to file, contains emcssh references and emcssh-specific
+# public keys.
+# Available metasymbols:
+# $H - user's home directory
+# $U - username
+# NOT ALLOWED SYMBOL %; If need insert %, write %%.
+# Default is $H/.ssh/emcssh_keys
+emcssh_keys 		$H/.ssh/emcssh_keys
+
+# Ignore list. These keys/subtrees will be marked as "disabled to print"
+# Default is empty
+#ignore  		@badguy|@badgrp
+
+# Maximal recursion during lists resolve. Default is 30
+recursion		30

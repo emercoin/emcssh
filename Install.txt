@@ -1,0 +1,97 @@
+Installation of Emercoin based Public Key Infrastructure (PKI) with emcssh
+
+version: emcssh-0.0.3
+this document changed: 18/Feb/2016
+
+To install Emercoin-based PKI using emcssh, you will need to perform the following steps:
+
+1. Install the Emercoin wallet onto your localhost, or on another trusted server.
+
+ATTN: RPC communication between Emercoin and emcssh is unsecured and therefore vulnerable to a man-in-the-middle (MIM) attack.
+For this reason, emcssh and Emercoin must be run together in a trusted domain, unless Emercoin is configured to accept HTTPS connections (refer to the SSL options in the Emercoin daemon). 
+
+2. Enable JSON RPC access to the Emercoin wallet from localhost (or remote host), and setup login/password in the config file:
+
+Linux:
+$HOME/.emercoin/emercoin.conf
+
+Windows:
+C:\Users\USERNAME\AppData\Roaming\Emercoin\emercoin.conf
+
+Contents of emercoin.conf should be as follows:
+
+rpcuser=rpc_USERNAME
+rpcpassword=rpc_PASSWORD
+
+listen=1
+server=1
+rpcallowip=127.0.0.1
+rpcallowip=IP_OF_ANOTHER_HOST, uses this wallet as domain controller.
+rpcport=6662
+
+Password must be strong, and wallet should preferably be encrypted and not hold a significant amount of EMC funds.
+If an attacker should learn the RPC password, and the wallet is not encrypted - the attacker would be able to steal the funds!
+
+If you need to enable SSL for RPC communication, then also add the following settings:
+
+rpcssl=1
+rpcsslcertificatechainfile=/path/to/file.cert
+rpcsslprivatekeyfile=/path/to/file.pem
+
+(refer to the SSL options in the Emercoin daemon)
+
+3. Install libraries used in emcssh. These are curl and jansson. To install on Linux, run:
+
+$ sudo apt-get install libcurl4-openssl-dev libjansson-dev
+
+4. Download, build and install emcssh program:
+
+$ wget http://emercoin.com/content/emcssh/emcssh-0.0.3.tar.gz
+$ tar xfz emcssh-0.0.3.tar.gz
+$ cd emcssh-0.0.3
+$ make
+$ make install
+
+5. Edit emcssh config file /usr/local/etc/emcssh_config and include the emcurl parameter to match the settings in emercoin.conf  
+
+e.g: emcurl http://rpc_USERNAME:rpc_PASSWORD@127.0.0.1:6662
+
+All other parameters in emcssh_config can be left as the defaults although setting verbose 4 may help during setup.
+The config file contains further explanation.
+
+Note: emcssh_config has permission 600 (only root can read/write file), to protect RPC password from being read by another user. 
+Don't change these permissions!
+
+6. Edit the sshd config file /etc/ssh/sshd_config and add the following lines:
+
+AuthorizedKeysCommand /usr/local/sbin/emcssh
+AuthorizedKeysCommandUser root
+
+Important info for DEBIAN Linux customers:
+This system allows group write to directory /usr/local. In this environment, sshd does not start emcssl 
+from /usr/local/sbin, prints error: Unsafe AuthorizedKeysCommand: bad ownership or modes for directory /usr/local/sbin.
+To fix this issue on Debian, do following:
+a) Move emcssh to the "trusted" directory:
+mv /usr/local/sbin/emcssh /usr/sbin/emcssh
+b) change path in the /etc/ssh/sshd_config to new one:
+AuthorizedKeysCommand /usr/sbin/emcssh
+
+7. Force sshd to re-read config:
+
+$ kill -HUP `cat /var/run/sshd.pid`
+
+8. Create a user-specific emcssh file:
+
+$HOME/.ssh/emcssh_keys
+
+and deposit your reference lists here.
+
+9. Test. Under user "root", run emcssh directly via the command line with parameter - username. 
+emcssh should resolve all references from emcssh_keys for that user, and print to stdout.
+
+If there is any problem - try to resolve yourself (read program output), or contact Emercoin Team for consulting.
+
+10. Perform test login to host as specified user. (Don't forget to set up the secret key on client side!).
+
+- Emercoin Team
+(team at emercoin dot com)
