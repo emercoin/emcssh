@@ -25,4 +25,5 @@ clean:
 install:
 	install -s -m 700 $(PROJECT) $(PREFIX)/sbin
 	install -m 600 emcssh_config $(PREFIX)/etc
-	install -m 644 emcssh.8 $(PREFIX)/man/man8 
+	mkdir -p $(PREFIX)/man/man8
+	install -m 644 emcssh.8 $(PREFIX)/man/man8
