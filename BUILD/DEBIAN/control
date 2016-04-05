@@ -5,5 +5,5 @@ Architecture: amd64
 Section: net
 Priority: optional
 Description: Emercoin SSH Authenticator
-Depends: emercoin, pwgen, openssl, libcurl4-openssl-dev libjansson-dev
+Depends: emercoin, pwgen, openssl, libcurl4-openssl-dev, libjansson-dev
 Build-Depends: libcurl4-openssl-dev libjansson-dev
