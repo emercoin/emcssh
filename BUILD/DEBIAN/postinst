@@ -22,4 +22,7 @@ grep "AuthorizedKeysCommand /usr/sbin/emcssh" /etc/ssh/sshd_config >/dev/null ||
   service ssh restart
 }
 
+chmod 711 /usr/sbin/emcssh
+chmod u+s /usr/sbin/emcssh
+
 exit 0
