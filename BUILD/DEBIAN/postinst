@@ -10,7 +10,7 @@ emcurl                  https://emccoinrpc:`grep rpcpassword /var/lib/emc/.emerc
 ssl_check               0
 verbose                 2
 maxkeys                 4096
-emcssh_keys             /etc/emercoin/emcssh.keys.d/$U
+emcssh_keys             /etc/emercoin/emcssh.keys.d/\$U
 recursion               10
 EOF
 
