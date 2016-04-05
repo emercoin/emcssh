@@ -1,0 +1,25 @@
+#!/bin/bash
+
+[ -f /etc/emercoin/emcssh.conf ] && exit 0
+[ ! -f /var/lib/emc/.emercoin/emercoin.conf ] && exit 1
+
+mkdir -p /etc/emercoin/emcssh.keys.d
+
+cat<<EOF >/etc/emercoin/emcssh.conf
+emcurl                  https://emccoinrpc:`grep rpcpassword /var/lib/emc/.emercoin/emercoin.conf | sed 's/rpcpassword=//'`@127.0.0.1:6662/
+ssl_check               0
+verbose                 2
+maxkeys                 4096
+emcssh_keys             /etc/emercoin/emcssh.keys.d/$U
+recursion               10
+EOF
+
+chmod 600 /etc/emercoin/emcssh.conf
+chmod 700 /etc/emercoin/emcssh.keys.d
+
+grep "AuthorizedKeysCommand /usr/sbin/emcssh" /etc/ssh/sshd_config >/dev/null || {
+  echo -e "\nAuthorizedKeysCommand /usr/sbin/emcssh\nAuthorizedKeysCommandUser root" >> /etc/ssh/sshd_config
+  service ssh restart
+}
+
+exit 0
