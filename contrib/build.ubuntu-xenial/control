@@ -1,0 +1,9 @@
+Package: emcssh
+Version: 0.0.3
+Maintainer: Aspanta Limited <info@aspanta.com>
+Architecture: amd64
+Section: net
+Priority: optional
+Description: Emercoin SSH Authenticator for Ubuntu 16.04 LTS
+Depends: emercoin, pwgen, openssl, libcurl4-openssl-dev, libjansson-dev
+Build-Depends: libcurl4-openssl-dev libjansson-dev
