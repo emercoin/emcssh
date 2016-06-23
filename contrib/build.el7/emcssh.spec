@@ -1,6 +1,6 @@
 Name:           emcssh
 Version:        0.0.3
-Release:        20%{?dist}
+Release:        1%{?dist}
 Summary:        Emercoin SSH Authenticator
 Group:          Applications/Internet
 Vendor:         Emercoin
