@@ -47,7 +47,7 @@ chmod u+s /usr/sbin/emcssh
 
 %files
 %doc COPYING
-%attr(700,root,root) %dir /etc/emercoin/emcssh.keys.d
+%attr(770,root,emc) %dir /etc/emercoin/emcssh.keys.d
 %attr(600,root,root) %config(noreplace) /etc/emercoin/emcssh.conf
 %attr(711,root,root) /usr/sbin/emcssh
 

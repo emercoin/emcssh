@@ -15,7 +15,8 @@ recursion               10
 EOF
 
 chmod 600 /etc/emercoin/emcssh.conf
-chmod 700 /etc/emercoin/emcssh.keys.d
+chmod 770 /etc/emercoin/emcssh.keys.d
+chown root.emc /etc/emercoin/emcssh.keys.d
 
 grep "AuthorizedKeysCommand /usr/sbin/emcssh" /etc/ssh/sshd_config >/dev/null || {
   echo -e "\nAuthorizedKeysCommand /usr/sbin/emcssh\nAuthorizedKeysCommandUser root" >> /etc/ssh/sshd_config
