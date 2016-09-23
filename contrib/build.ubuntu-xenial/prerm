@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+. /usr/share/debconf/confmodule
+
+case "$1" in
+  remove|deconfigure|abort-install)
+    rm -f /var/tmp/emcssh-install.flag
+    sed -i -e "s|^AuthorizedKeysCommand /usr/sbin/emcssh||" /etc/ssh/sshd_config
+    sed -i -e "s|^AuthorizedKeysCommandUser root||" /etc/ssh/sshd_config
+    systemctl restart ssh || true
+  ;;
+esac
+
+exit 0
