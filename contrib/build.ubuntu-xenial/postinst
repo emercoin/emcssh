@@ -7,8 +7,8 @@ case "$1" in
   configure)
     [ -f /var/tmp/emcssh-install.flag ] && {
       rm -f /var/tmp/emcssh-install.flag
-      rpcuser="$(grep rpcuser /var/lib/emc/.emercoin/emercoin.conf | sed \"s/rpcuser=//\")"
-      rpcpass="$(grep rpcpassword /var/lib/emc/.emercoin/emercoin.conf | sed \"s/rpcpassword=//\")"
+      rpcuser="$(grep rpcuser /var/lib/emc/.emercoin/emercoin.conf | sed 's/rpcuser=//')"
+      rpcpass="$(grep rpcpassword /var/lib/emc/.emercoin/emercoin.conf | sed 's/rpcpassword=//')"
       sed -i -e "s|\(emcurl\)\(.*\)|emcurl https://$rpcuser:$rpcpass@127.0.0.1:6662/|" /etc/emercoin/emcssh.conf
       chmod 600 /etc/emercoin/emcssh.conf
       chown emc.emc /etc/emercoin/emcssh.conf
