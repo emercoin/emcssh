@@ -5,7 +5,6 @@ set -e
 
 case "$1" in
   install)
-    [ ! -f /var/lib/emc/.emercoin/emercoin.conf ] && { echo "Cannot stat /var/lib/emc/.emercoin/emercoin.conf"; exit 1; }
     mkdir -p /etc/emercoin/emcssh.keys.d
     chown root.emc /etc/emercoin/emcssh.keys.d
     chmod 770 /etc/emercoin/emcssh.keys.d
