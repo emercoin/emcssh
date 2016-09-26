@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+. /usr/share/debconf/confmodule
+
+case "$1" in
+  install)
+    mkdir -p /etc/emercoin/emcssh.keys.d
+    chown root.emc /etc/emercoin/emcssh.keys.d
+    chmod 770 /etc/emercoin/emcssh.keys.d
+    grep "AuthorizedKeysCommand /usr/sbin/emcssh" /etc/ssh/sshd_config >/dev/null || {
+      echo -e "\nAuthorizedKeysCommand /usr/sbin/emcssh\nAuthorizedKeysCommandUser root" >> /etc/ssh/sshd_config
+      systemctl restart ssh || true
+    }
+    touch /var/tmp/emcssh-install.flag
+  ;;
+esac
+
+exit 0
