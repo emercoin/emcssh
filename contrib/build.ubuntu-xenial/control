@@ -1,5 +1,5 @@
 Package: emcssh
-Version: 0.0.3
+Version: 0.0.4
 Maintainer: Aspanta Limited <info@aspanta.com>
 Architecture: amd64
 Section: net

@@ -1,5 +1,5 @@
 Name:           emcssh
-Version:        0.0.3
+Version:        0.0.4
 Release:        1%{?dist}
 Summary:        Emercoin SSH Authenticator
 Group:          Applications/Internet
@@ -42,15 +42,15 @@ cd source
   } || true
 } || exit 0
 
-%posttrans
-chmod u+s /usr/sbin/emcssh
-
 %files
 %doc COPYING
 %attr(770,root,emc) %dir /etc/emercoin/emcssh.keys.d
 %attr(600,root,root) %config(noreplace) /etc/emercoin/emcssh.conf
-%attr(711,root,root) /usr/sbin/emcssh
+%attr(4711,root,root) /usr/sbin/emcssh
 
 %changelog
+* Fri Mar 3 2017 Oleg Khovayko <oleg@emercoin.com> 0.0.4
+- Set timeout in 30 sec
+
 * Tue Jun 21 2016 Sergii Vakula <sv@emercoin.com> 0.0.3
 - Initial release
