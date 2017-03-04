@@ -7,6 +7,7 @@ int8_t   g_verbose = 0;			// do not verbose
 int8_t   g_ignore  = 1;			// Default flag is ignore
 int8_t	 g_ssl_check = 1;		// Check Server's SSL certificate
 uint32_t g_recursion = MAX_RECURSION;	// Recursion limit for open tokens
+uint32_t g_timio     = DEF_TIMIO;	// Default url connection timeout, secs
 /*----------------------------------------------------------------------------*/
 
 int main(int argc, char **argv) {
@@ -76,6 +77,10 @@ int main(int argc, char **argv) {
   const char *recursion = SearchHT("recursion");
   if(recursion != NULL) 
     g_recursion = atoi(recursion);
+
+  const char *timio = SearchHT("timio");
+  if(timio != NULL)
+    g_timio = atoi(timio);
 
   const char *ssl_check = SearchHT("ssl_check");
   if(ssl_check != NULL) 

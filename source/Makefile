@@ -24,6 +24,6 @@ clean:
 
 install:
 	install -s -m 700 $(PROJECT) $(PREFIX)/sbin
+	mkdir -p $(PREFIX)/man/man8 $(PREFIX)/etc/emercoin
 	install -m 600 emcssh.conf $(PREFIX)/etc/emercoin
-	mkdir -p $(PREFIX)/man/man8
 	install -m 644 emcssh.8 $(PREFIX)/man/man8

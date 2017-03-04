@@ -21,11 +21,11 @@
 #define CONFHTSZ	0x100	// Hashtable size for config
 #define URANDOM "/dev/urandom"	// Path for Unix rand generator; used in htable.c S_block
 #define CF_PATH "/etc/emercoin/emcssh.conf" // Path to config file
-#define MAX_UN_LEN 500		// Max username length
-#define EMC_VAL_SZ (20 * 1024)	// Msz VALUE sise in EMC
+#define MAX_UN_LEN	500	// Max username length
+#define EMC_VAL_SZ (20 * 1024)	// Max VALUE sise in EMC
 #define DEFAULT_AUTH_KEYS "$H/.ssh/emcssh_keys"
-#define MAX_RECURSION 30
-
+#define MAX_RECURSION	30
+#define DEF_TIMIO	30       // Default url connection timeout, secs
 /*----------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------*/

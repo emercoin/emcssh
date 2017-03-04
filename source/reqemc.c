@@ -12,9 +12,10 @@
 
 /*----------------------------------------------------------------------------*/
 
-extern int8_t g_verbose;
-extern int8_t g_ssl_check;
-extern char  *g_emcurl;
+extern int8_t	g_verbose;
+extern int8_t	g_ssl_check;
+extern char    *g_emcurl;
+extern uint32_t	g_timio;
 
 /*----------------------------------------------------------------------------*/
 // Structure from CURL example - for fetch HTTP data into memory
@@ -86,6 +87,9 @@ static json_t *CoinSrvRequest(const char *method, json_t *req_arr, int *errcode)
   // Setup URL
   curl_easy_setopt(curl, CURLOPT_URL, g_emcurl);
 
+  /* complete within g_timio=30 seconds */
+  curl_easy_setopt(curl, CURLOPT_TIMEOUT, g_timio);
+
   // Setup JSON payload
   curl_easy_setopt(curl, CURLOPT_POSTFIELDS, txt);
 
@@ -97,7 +101,7 @@ static json_t *CoinSrvRequest(const char *method, json_t *req_arr, int *errcode)
        
   /* some servers don't like requests that are made without a user-agent
    *      field, so we provide one */ 
-  curl_easy_setopt(curl, CURLOPT_USERAGENT, "emcssh/0.0.3");
+  curl_easy_setopt(curl, CURLOPT_USERAGENT, "emcssh/0.0.4");
 
   /* Verify Server Certificate flag */
   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, g_ssl_check);

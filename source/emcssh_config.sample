@@ -28,3 +28,7 @@ emcssh_keys 		$H/.ssh/emcssh_keys
 
 # Maximal recursion during lists resolve. Default is 30
 recursion		30
+
+# Connection timeout to emcurl, secs
+timio			30
+
